@@ -1,0 +1,41 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    @apply scroll-smooth;
+    height: 100vh;
+    overflow: hidden;
+  }
+
+  body {
+    @apply bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-white;
+    height: 100vh;
+    overflow: hidden;
+  }
+
+  #root {
+    @apply min-h-screen flex flex-col;
+    height: 100vh;
+    overflow: hidden;
+  }
+}
+
+@layer components {
+  .btn {
+    @apply px-6 py-2 rounded-lg font-semibold transition-all duration-300 no-underline cursor-pointer border-none;
+  }
+
+  .btn:disabled {
+    @apply opacity-60 cursor-not-allowed;
+  }
+
+  .error-message {
+    @apply bg-red-100 text-red-800 px-5 py-3 rounded-lg mb-5 border border-red-300;
+  }
+
+  .success-message {
+    @apply bg-green-100 text-green-800 px-5 py-3 rounded-lg mb-5 border border-green-300;
+  }
+}
