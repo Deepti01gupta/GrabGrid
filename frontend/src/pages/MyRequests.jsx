@@ -8,6 +8,9 @@ const MyRequests = () => {
   const [requests, setRequests] = useState([]);
   const [borrows, setBorrows] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [loadingId, setLoadingId] = useState(null);
+  const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
   const [activeTab, setActiveTab] = useState('incoming');
 
   useEffect(() => {
@@ -32,32 +35,62 @@ const MyRequests = () => {
   };
 
   const handleApprove = async (borrowId) => {
+    setLoadingId(borrowId);
+    setError('');
+    setSuccess('');
     try {
       await api.post('/borrow/approve', { borrowId });
+      setSuccess('Request approved successfully!');
+      setTimeout(() => setSuccess(''), 3000);
       fetchData();
     } catch (error) {
+      const errorMsg = error.response?.data?.message || 'Failed to approve request';
+      setError(errorMsg);
       console.error('Failed to approve', error);
+      setTimeout(() => setError(''), 3000);
+    } finally {
+      setLoadingId(null);
     }
   };
 
   const handleReject = async (borrowId) => {
+    setLoadingId(borrowId);
+    setError('');
+    setSuccess('');
     try {
       await api.post('/borrow/reject', { borrowId });
+      setSuccess('Request rejected successfully!');
+      setTimeout(() => setSuccess(''), 3000);
       fetchData();
     } catch (error) {
+      const errorMsg = error.response?.data?.message || 'Failed to reject request';
+      setError(errorMsg);
       console.error('Failed to reject', error);
+      setTimeout(() => setError(''), 3000);
+    } finally {
+      setLoadingId(null);
     }
   };
 
   const handleReturn = async (borrowId) => {
+    setLoadingId(borrowId);
+    setError('');
+    setSuccess('');
     try {
       await api.post('/borrow/return', {
         borrowId,
         conditionOnReturn: 'Good',
       });
+      setSuccess('Item returned successfully!');
+      setTimeout(() => setSuccess(''), 3000);
       fetchData();
     } catch (error) {
+      const errorMsg = error.response?.data?.message || 'Failed to return item';
+      setError(errorMsg);
       console.error('Failed to return item', error);
+      setTimeout(() => setError(''), 3000);
+    } finally {
+      setLoadingId(null);
     }
   };
 
@@ -69,6 +102,20 @@ const MyRequests = () => {
         <h1 className={`text-4xl font-bold ${isDark ? 'text-white' : 'text-gray-900'} text-center mb-8`}>
           Borrow Management
         </h1>
+
+        {/* Error Alert */}
+        {error && (
+          <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg mb-6">
+            {error}
+          </div>
+        )}
+
+        {/* Success Alert */}
+        {success && (
+          <div className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded-lg mb-6">
+            {success}
+          </div>
+        )}
 
         {/* Tab Buttons */}
         <div className="flex gap-4 mb-8 justify-center flex-wrap">
@@ -119,7 +166,12 @@ const MyRequests = () => {
                     </p>
                     <p className={`${isDark ? 'text-gray-300' : 'text-gray-700'} mb-4`}>
                       <strong>Status:</strong>{' '}
-                      <span className="inline-block px-2 py-1 bg-yellow-100 text-yellow-800 rounded">
+                      <span className={`inline-block px-3 py-1 rounded font-semibold ${
+                        request.status === 'Pending' ? 'bg-yellow-100 text-yellow-800' :
+                        request.status === 'Active' ? 'bg-green-100 text-green-800' :
+                        request.status === 'Rejected' ? 'bg-red-100 text-red-800' :
+                        'bg-gray-100 text-gray-800'
+                      }`}>
                         {request.status}
                       </span>
                     </p>
@@ -128,15 +180,21 @@ const MyRequests = () => {
                       <div className="flex gap-3">
                         <button
                           onClick={() => handleApprove(request._id)}
-                          className="flex-1 bg-green-500 text-white py-2 rounded-lg hover:bg-green-600 transition font-semibold"
+                          disabled={loadingId === request._id}
+                          className={`flex-1 bg-green-500 text-white py-2 rounded-lg hover:bg-green-600 transition font-semibold disabled:opacity-50 disabled:cursor-not-allowed ${
+                            loadingId === request._id ? 'opacity-50' : ''
+                          }`}
                         >
-                          Approve
+                          {loadingId === request._id ? 'Approving...' : 'Approve'}
                         </button>
                         <button
                           onClick={() => handleReject(request._id)}
-                          className="flex-1 bg-red-500 text-white py-2 rounded-lg hover:bg-red-600 transition font-semibold"
+                          disabled={loadingId === request._id}
+                          className={`flex-1 bg-red-500 text-white py-2 rounded-lg hover:bg-red-600 transition font-semibold disabled:opacity-50 disabled:cursor-not-allowed ${
+                            loadingId === request._id ? 'opacity-50' : ''
+                          }`}
                         >
-                          Reject
+                          {loadingId === request._id ? 'Rejecting...' : 'Reject'}
                         </button>
                       </div>
                     )}
@@ -185,9 +243,12 @@ const MyRequests = () => {
                     {borrow.status === 'Active' && (
                       <button
                         onClick={() => handleReturn(borrow._id)}
-                        className="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition font-semibold"
+                        disabled={loadingId === borrow._id}
+                        className={`w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition font-semibold disabled:opacity-50 disabled:cursor-not-allowed ${
+                          loadingId === borrow._id ? 'opacity-50' : ''
+                        }`}
                       >
-                        Mark as Returned
+                        {loadingId === borrow._id ? 'Processing...' : 'Mark as Returned'}
                       </button>
                     )}
                   </div>

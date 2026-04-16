@@ -43,9 +43,15 @@ const borrowSchema = new mongoose.Schema(
       default: 0,
       min: 0,
     },
+    totalAmount: {
+      type: Number,
+      default: 0,
+      min: 0,
+    },
     conditionOnReturn: {
       type: String,
-      enum: ['New', 'Good', 'Used', 'Damaged', 'Not Returned'],
+      // Values should be: 'New', 'Good', 'Used', 'Damaged', 'Not Returned'
+      // Can be null/undefined initially, set when item is returned
       default: null,
     },
     notes: {

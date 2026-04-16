@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import useAuth from '../hooks/useAuth';
 import { useTheme } from '../context/ThemeContext';
+import '../../src/styles/authStyles.css';
 
 const Register = () => {
   const [formData, setFormData] = useState({
@@ -41,24 +42,25 @@ const Register = () => {
   };
 
   return (
-    <div className="min-h-screen flex justify-center items-center px-4 py-8 bg-gradient-to-br from-blue-600 to-purple-700 dark:from-gray-900 dark:to-gray-800">
-      <div className="bg-white dark:bg-gray-900 rounded-2xl shadow-2xl dark:shadow-2xl dark:border dark:border-gray-700 p-8 sm:p-10 max-w-md w-full">
-        <h2 className="font-display text-3xl font-bold text-center mb-2 text-gray-900 dark:text-white">
-          Register to GrabGrid
-        </h2>
-        <p className="text-center text-gray-600 dark:text-gray-400 mb-6">Join our community and start sharing</p>
-
+    <div className="min-h-screen flex justify-center items-center px-4 bg-[#181a2a] relative overflow-hidden">
+      {/* Background Circles */}
+      <div className="bg-circles">
+        <div className="bg-circle one"></div>
+        <div className="bg-circle two"></div>
+      </div>
+      {/* Glass Card */}
+      <div className="glass-card p-10 max-w-md w-full flex flex-col relative z-10">
+        {/* Illustration Placeholder (replace src with your asset) */}
+        <img src="/login-3d.png" alt="register-illustration" className="illustration" />
+        <h2 className="font-display text-4xl font-bold text-center mb-4 text-cyan-100 tracking-wide drop-shadow-lg">REGISTER</h2>
         {error && (
-          <div className="bg-red-100 dark:bg-red-900 border border-red-400 dark:border-red-700 text-red-700 dark:text-red-200 px-4 py-3 rounded-lg mb-6">
+          <div className="bg-red-100 dark:bg-red-900 border border-red-400 dark:border-red-700 text-red-700 dark:text-red-300 px-4 py-3 rounded-lg mb-6">
             {error}
           </div>
         )}
-
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label htmlFor="name" className="block text-sm font-semibold text-gray-800 dark:text-gray-200 mb-1">
-              Full Name
-            </label>
+            <label htmlFor="name" className="block text-sm font-semibold text-cyan-200 mb-2">FULL NAME</label>
             <input
               type="text"
               id="name"
@@ -67,14 +69,12 @@ const Register = () => {
               value={formData.name}
               onChange={handleChange}
               required
-              className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:outline-none focus:border-blue-500 dark:focus:border-blue-400 focus:ring-2 focus:ring-blue-200 dark:focus:ring-blue-400"
+              className="w-full px-4 py-3 border-none rounded-lg bg-[#23264a] text-cyan-100 focus:outline-none focus:ring-2 focus:ring-cyan-400 text-lg tracking-wide"
             />
           </div>
 
           <div>
-            <label htmlFor="email" className="block text-sm font-semibold text-gray-800 dark:text-gray-200 mb-1">
-              Email
-            </label>
+            <label htmlFor="email" className="block text-sm font-semibold text-cyan-200 mb-2">EMAIL</label>
             <input
               type="email"
               id="email"
@@ -83,14 +83,12 @@ const Register = () => {
               value={formData.email}
               onChange={handleChange}
               required
-              className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:outline-none focus:border-blue-500 dark:focus:border-blue-400 focus:ring-2 focus:ring-blue-200 dark:focus:ring-blue-400"
+              className="w-full px-4 py-3 border-none rounded-lg bg-[#23264a] text-cyan-100 focus:outline-none focus:ring-2 focus:ring-cyan-400 text-lg tracking-wide"
             />
           </div>
 
           <div>
-            <label htmlFor="password" className="block text-sm font-semibold text-gray-800 dark:text-gray-200 mb-1">
-              Password
-            </label>
+            <label htmlFor="password" className="block text-sm font-semibold text-cyan-200 mb-2">PASSWORD</label>
             <input
               type="password"
               id="password"
@@ -99,15 +97,13 @@ const Register = () => {
               value={formData.password}
               onChange={handleChange}
               required
-              className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:outline-none focus:border-blue-500 dark:focus:border-blue-400 focus:ring-2 focus:ring-blue-200 dark:focus:ring-blue-400"
+              className="w-full px-4 py-3 border-none rounded-lg bg-[#23264a] text-cyan-100 focus:outline-none focus:ring-2 focus:ring-cyan-400 text-lg tracking-wide"
             />
           </div>
 
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label htmlFor="hostelBlock" className="block text-sm font-semibold text-gray-800 dark:text-gray-200 mb-1">
-                Hostel Block
-              </label>
+              <label htmlFor="hostelBlock" className="block text-sm font-semibold text-cyan-200 mb-2">HOSTEL BLOCK</label>
               <input
                 type="text"
                 id="hostelBlock"
@@ -116,14 +112,11 @@ const Register = () => {
                 value={formData.hostelBlock}
                 onChange={handleChange}
                 required
-                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:outline-none focus:border-blue-500 dark:focus:border-blue-400"
+                className="w-full px-4 py-3 border-none rounded-lg bg-[#23264a] text-cyan-100 focus:outline-none focus:ring-2 focus:ring-cyan-400 text-lg tracking-wide"
               />
             </div>
-
             <div>
-              <label htmlFor="roomNumber" className="block text-sm font-semibold text-gray-800 dark:text-gray-200 mb-1">
-                Room Number
-              </label>
+              <label htmlFor="roomNumber" className="block text-sm font-semibold text-cyan-200 mb-2">ROOM NUMBER</label>
               <input
                 type="text"
                 id="roomNumber"
@@ -132,15 +125,13 @@ const Register = () => {
                 value={formData.roomNumber}
                 onChange={handleChange}
                 required
-                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:outline-none focus:border-blue-500 dark:focus:border-blue-400"
+                className="w-full px-4 py-3 border-none rounded-lg bg-[#23264a] text-cyan-100 focus:outline-none focus:ring-2 focus:ring-cyan-400 text-lg tracking-wide"
               />
             </div>
           </div>
 
           <div>
-            <label htmlFor="phoneNumber" className="block text-sm font-semibold text-gray-800 dark:text-gray-200 mb-1">
-              Phone Number
-            </label>
+            <label htmlFor="phoneNumber" className="block text-sm font-semibold text-cyan-200 mb-2">PHONE NUMBER</label>
             <input
               type="tel"
               id="phoneNumber"
@@ -149,25 +140,21 @@ const Register = () => {
               value={formData.phoneNumber}
               onChange={handleChange}
               required
-              className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:outline-none focus:border-blue-500 dark:focus:border-blue-400"
+              className="w-full px-4 py-3 border-none rounded-lg bg-[#23264a] text-cyan-100 focus:outline-none focus:ring-2 focus:ring-cyan-400 text-lg tracking-wide"
             />
           </div>
 
           <button 
             type="submit" 
             disabled={loading} 
-            className="w-full bg-gradient-to-r from-blue-600 to-purple-700 dark:from-blue-700 dark:to-purple-800 text-white font-bold py-3 rounded-lg hover:shadow-lg dark:hover:shadow-xl transition disabled:opacity-60 mt-6"
+            className="w-full bg-[#0a1a3a] text-cyan-100 font-bold py-3 rounded-lg mt-2 text-lg tracking-wide hover:bg-[#1a2a5a] transition disabled:opacity-60"
           >
-            {loading ? 'Registering...' : 'Register'}
+            {loading ? 'Registering...' : 'SUBMIT'}
           </button>
         </form>
-
-        <p className="text-center text-gray-600 dark:text-gray-400 mt-6">
-          Already have an account?{' '}
-          <Link to="/login" className="text-blue-600 dark:text-blue-400 font-bold hover:text-blue-700 dark:hover:text-blue-300">
-            Login here
-          </Link>
-        </p>
+        <div className="flex justify-between mt-6 text-cyan-200 text-base">
+          <Link to="/login" className="hover:underline text-cyan-300">LOGIN</Link>
+        </div>
       </div>
     </div>
   );

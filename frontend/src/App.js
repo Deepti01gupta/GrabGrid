@@ -13,7 +13,9 @@ import Register from './pages/Register';
 import Dashboard from './pages/Dashboard';
 import Items from './pages/Items';
 import AddItem from './pages/AddItem';
+import ItemDetails from './pages/ItemDetails';
 import MyRequests from './pages/MyRequests';
+import Profile from './pages/Profile';
 
 function App() {
   return (
@@ -48,6 +50,15 @@ function App() {
               />
 
               <Route
+                path="/item/:itemId"
+                element={
+                  <ProtectedRoute>
+                    <ItemDetails />
+                  </ProtectedRoute>
+                }
+              />
+
+              <Route
                 path="/add-item"
                 element={
                   <ProtectedRoute>
@@ -61,6 +72,14 @@ function App() {
                 element={
                   <ProtectedRoute>
                     <MyRequests />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/profile"
+                element={
+                  <ProtectedRoute>
+                    <Profile />
                   </ProtectedRoute>
                 }
               />

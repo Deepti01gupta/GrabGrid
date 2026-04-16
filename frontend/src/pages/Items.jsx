@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import api from '../api/axios';
 import ItemCard from '../components/ItemCard';
 import Loader from '../components/Loader';
@@ -9,21 +9,34 @@ const Items = () => {
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [searchInput, setSearchInput] = useState('');
   const [filters, setFilters] = useState({
     category: '',
-    condition: '',
-    hostelBlock: '',
     itemName: '',
   });
+  const debounceTimer = useRef(null);
 
+  // Debounce search input
+  useEffect(() => {
+    if (debounceTimer.current) clearTimeout(debounceTimer.current);
+    
+    debounceTimer.current = setTimeout(() => {
+      setFilters(prev => ({
+        ...prev,
+        itemName: searchInput,
+      }));
+    }, 500); // Wait 500ms after user stops typing
+
+    return () => clearTimeout(debounceTimer.current);
+  }, [searchInput]);
+
+  // Fetch items when filters change (NOT on every keystroke)
   useEffect(() => {
     const fetchItems = async () => {
       setLoading(true);
       try {
         const params = new URLSearchParams();
         if (filters.category) params.append('category', filters.category);
-        if (filters.condition) params.append('condition', filters.condition);
-        if (filters.hostelBlock) params.append('hostelBlock', filters.hostelBlock);
         if (filters.itemName) params.append('itemName', filters.itemName);
 
         const response = await api.get(`/items/search?${params}`);
@@ -36,7 +49,11 @@ const Items = () => {
     };
 
     fetchItems();
-  }, [filters]);
+  }, [filters.category, filters.itemName]);
+
+  const handleSearchChange = (e) => {
+    setSearchInput(e.target.value);
+  };
 
   const handleFilterChange = (e) => {
     setFilters({
@@ -59,10 +76,9 @@ const Items = () => {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
             <input
               type="text"
-              name="itemName"
               placeholder="Search by item name..."
-              value={filters.itemName}
-              onChange={handleFilterChange}
+              value={searchInput}
+              onChange={handleSearchChange}
               className={`px-4 py-2 border rounded-lg focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200 ${isDark ? 'bg-gray-700 border-gray-600 text-white placeholder-gray-400' : 'bg-white border-gray-300 text-gray-900'}`}
             />
 
@@ -78,30 +94,6 @@ const Items = () => {
               <option value="Appliance">Appliance</option>
               <option value="Sports Equipment">Sports Equipment</option>
               <option value="Other">Other</option>
-            </select>
-
-            <select
-              name="condition"
-              value={filters.condition}
-              onChange={handleFilterChange}
-              className={`px-4 py-2 border rounded-lg focus:outline-none focus:border-blue-500 ${isDark ? 'bg-gray-700 border-gray-600 text-white' : 'bg-white border-gray-300 text-gray-900'}`}
-            >
-              <option value="">Any Condition</option>
-              <option value="New">New</option>
-              <option value="Good">Good</option>
-              <option value="Used">Used</option>
-            </select>
-
-            <select
-              name="hostelBlock"
-              value={filters.hostelBlock}
-              onChange={handleFilterChange}
-              className={`px-4 py-2 border rounded-lg focus:outline-none focus:border-blue-500 ${isDark ? 'bg-gray-700 border-gray-600 text-white' : 'bg-white border-gray-300 text-gray-900'}`}
-            >
-              <option value="">All Blocks</option>
-              <option value="Block A">Block A</option>
-              <option value="Block B">Block B</option>
-              <option value="Block C">Block C</option>
             </select>
           </div>
         </div>
@@ -120,7 +112,7 @@ const Items = () => {
             <div className="col-span-full text-center py-12">
               <p className={`text-xl ${isDark ? 'text-gray-300' : 'text-gray-600'}`}>No items found matching your filters</p>
             </div>
-          )}}
+          )}
         </div>
       </div>
     </div>

@@ -56,6 +56,10 @@ const itemSchema = new mongoose.Schema(
       type: Date,
       required: true,
     },
+    imageUrl: {
+      type: String,
+      default: null,
+    },
     currentBorrower: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'User',
@@ -68,6 +72,15 @@ const itemSchema = new mongoose.Schema(
     borrowEndDate: {
       type: Date,
       default: null,
+    },
+    pricePerDay: {
+      type: Number,
+      default: 0,
+      min: 0,
+    },
+    totalTimesBorrowed: {
+      type: Number,
+      default: 0,
     },
     createdAt: {
       type: Date,
