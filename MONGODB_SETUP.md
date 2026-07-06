@@ -202,7 +202,8 @@ mongosh
    MONGODB_URI=mongodb://localhost:27017/hostel-share
 
    # OR MongoDB Atlas (cloud)
-   MONGODB_URI=mongodb+srv://grabgrid_user:MyG$reat!Pass123@grabgrid-dev.xxxxx.mongodb.net/hostel-share?retryWrites=true&w=majority
+   # Replace with your actual MongoDB Atlas connection string from UI
+   MONGODB_URI=mongodb+srv://YOUR_USERNAME:YOUR_PASSWORD@your-cluster.mongodb.net/hostel-share?retryWrites=true&w=majority
    ```
 
    **⚠️ IMPORTANT:**
@@ -316,7 +317,8 @@ NODE_ENV=development
 MONGODB_URI=mongodb://localhost:27017/hostel-share
 
 # MONGODB ATLAS:
-# MONGODB_URI=mongodb+srv://grabgrid_user:password@grabgrid-dev.xxxxx.mongodb.net/hostel-share?retryWrites=true&w=majority
+# Replace with your actual MongoDB Atlas connection string
+# MONGODB_URI=mongodb+srv://YOUR_USERNAME:YOUR_PASSWORD@your-cluster.mongodb.net/hostel-share?retryWrites=true&w=majority
 
 # JWT
 JWT_SECRET=your_super_secret_jwt_key_change_in_production

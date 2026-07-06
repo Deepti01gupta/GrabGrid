@@ -347,8 +347,9 @@ mongodb+srv://grabgrid_user:PASSWORD@cluster-name.xxxxx.mongodb.net/hostel-share
 # Local (development)
 MONGODB_URI=mongodb://localhost:27017/hostel-share
 
-# Atlas (production)
-MONGODB_URI=mongodb+srv://grabgrid_user:YOUR_PASSWORD@cluster-name.xxxxx.mongodb.net/hostel-share?retryWrites=true&w=majority
+# Atlas (production) - Replace credentials from MongoDB Atlas dashboard
+# Format: mongodb+srv://USERNAME:PASSWORD@cluster.mongodb.net/databasename
+MONGODB_URI=mongodb+srv://YOUR_USERNAME:YOUR_PASSWORD@cluster-name.xxxxx.mongodb.net/hostel-share?retryWrites=true&w=majority
 ```
 
 ### 4. Test Connection

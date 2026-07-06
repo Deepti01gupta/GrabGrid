@@ -1,0 +1,61 @@
+#!/bin/sh
+#
+# GrabGrid Pre-commit Hook
+# Prevents accidental commits of secrets to git
+#
+# Installation:
+#   chmod +x .git/hooks/pre-commit
+#   cp backend/scripts/pre-commit.hook .git/hooks/pre-commit (if using git hooks)
+#
+
+# Colors for output
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+YELLOW='\033[1;33m'
+NC='\033[0m' # No Color
+
+echo "🔒 Running security pre-commit checks..."
+
+# Check for .env files in staging
+echo "📋 Checking for .env files..."
+if git diff --cached --name-only | grep -E '^\.env$|^\.env\.' > /dev/null; then
+    echo -e "${RED}❌ ERROR: .env file detected in staging${NC}"
+    echo "   Do not commit .env files to git!"
+    echo "   Remove from staging with: git reset .env"
+    exit 1
+fi
+
+# Check for MongoDB credentials in staged files
+echo "🔐 Scanning for MongoDB credentials..."
+if git diff --cached | grep -i 'mongodb+srv://.*:.*@' | grep -v '://YOUR\|://username\|://grabgrid_user'; then
+    echo -e "${RED}❌ ERROR: Possible MongoDB credentials found${NC}"
+    echo "   Do not commit database credentials!"
+    exit 1
+fi
+
+# Check for JWT/API secrets
+echo "🔐 Scanning for JWT secrets..."
+if git diff --cached | grep -iE 'jwt_secret\s*=\s*[\'"'][^\'\"]{10,}' | grep -v 'your\|example\|placeholder'; then
+    echo -e "${RED}❌ ERROR: Possible JWT secret found${NC}"
+    echo "   Do not commit secrets to git!"
+    exit 1
+fi
+
+# Check for AWS/GCP/Azure credentials
+echo "🔐 Scanning for cloud credentials..."
+if git diff --cached | grep -iE 'AKIA[0-9A-Z]{16}|aws_secret_access_key|AIza[0-9A-Za-z\-_]{35}|-----BEGIN PRIVATE KEY'; then
+    echo -e "${RED}❌ ERROR: Cloud credentials detected${NC}"
+    echo "   Do not commit API keys or credentials!"
+    exit 1
+fi
+
+# Check for common password patterns
+echo "🔐 Scanning for password patterns..."
+if git diff --cached | grep -iE 'password\s*[:,=]\s*[\'"][^\'\"]{6,}|api_?key\s*[:,=]\s*[\'"][^\'\"]{10,}|secret\s*[:,=]\s*[\'"][^\'\"]{10,}' | grep -v 'your\|example\|placeholder\|change'; then
+    echo -e "${YELLOW}⚠️  WARNING: Possible password/key found${NC}"
+    echo "   Review the changes above to ensure no secrets are being committed."
+    echo "   If this is intentional, use: git commit --no-verify"
+fi
+
+echo -e "${GREEN}✅ Pre-commit checks passed${NC}"
+exit 0

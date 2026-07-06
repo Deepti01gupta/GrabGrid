@@ -1,107 +1,184 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import '../../src/styles/authStyles.css';
-import { useTheme } from '../context/ThemeContext';
+import { Alert } from '../components/UI/index';
 
 const Login = () => {
-  const [formData, setFormData] = useState({
-    email: '',
-    password: '',
-  });
+  const [formData, setFormData] = useState({ email: '', password: '' });
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
   const { login, user } = useAuth();
-    // Redirect to dashboard if already logged in
-    useEffect(() => {
-      if (user) {
-        navigate('/dashboard');
-      }
-    }, [user, navigate]);
-  const { isDark } = useTheme();
+
+  useEffect(() => {
+    if (user) navigate('/dashboard');
+  }, [user, navigate]);
 
   const handleChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value,
-    });
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+    if (error) setError('');
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
     setLoading(true);
-
     try {
       await login(formData.email, formData.password);
       navigate('/dashboard');
     } catch (err) {
-      console.error('Login error:', err);
-      setError(err.response?.data?.message || err.message || 'Login failed');
+      setError(err.response?.data?.message || err.message || 'Login failed. Please try again.');
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="min-h-screen flex justify-center items-center px-4 bg-[#181a2a] relative overflow-hidden">
-      {/* Background Circles */}
-      <div className="bg-circles">
-        <div className="bg-circle one"></div>
-        <div className="bg-circle two"></div>
+    <div className="min-h-screen flex items-center justify-center px-4 relative overflow-hidden"
+      style={{ background: 'linear-gradient(135deg, #0d1117 0%, #0f172a 50%, #0d1117 100%)' }}
+    >
+      {/* Animated background orbs */}
+      <div className="pointer-events-none absolute inset-0 overflow-hidden">
+        <div className="absolute -top-1/4 -left-1/4 w-[600px] h-[600px] rounded-full opacity-20"
+          style={{ background: 'radial-gradient(circle, #6366f1 0%, transparent 70%)', filter: 'blur(40px)' }} />
+        <div className="absolute -bottom-1/4 -right-1/4 w-[500px] h-[500px] rounded-full opacity-20"
+          style={{ background: 'radial-gradient(circle, #8b5cf6 0%, transparent 70%)', filter: 'blur(40px)' }} />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[300px] h-[300px] rounded-full opacity-10"
+          style={{ background: 'radial-gradient(circle, #06b6d4 0%, transparent 70%)', filter: 'blur(30px)' }} />
       </div>
+
       {/* Glass Card */}
-      <div className="glass-card p-10 max-w-md w-full flex flex-col relative z-10">
-        {/* Illustration Placeholder (replace src with your asset) */}
-        <img src="/login-3d.png" alt="login-illustration" className="illustration" />
-        <h2 className="font-display text-4xl font-bold text-center mb-4 text-cyan-100 tracking-wide drop-shadow-lg">LOGIN</h2>
-        {error && (
-          <div className="bg-red-100 dark:bg-red-900 border border-red-400 dark:border-red-700 text-red-700 dark:text-red-300 px-4 py-3 rounded-lg mb-6">
-            {error}
+      <div
+        className="relative z-10 w-full max-w-md rounded-2xl p-8 md:p-10"
+        style={{
+          background: 'rgba(255,255,255,0.05)',
+          backdropFilter: 'blur(20px)',
+          WebkitBackdropFilter: 'blur(20px)',
+          border: '1px solid rgba(255,255,255,0.12)',
+          boxShadow: '0 25px 60px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.1)',
+        }}
+      >
+        {/* Logo / Brand */}
+        <div className="text-center mb-8">
+          <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl mb-4"
+            style={{ background: 'linear-gradient(135deg, #6366f1, #8b5cf6)' }}>
+            <span className="text-2xl">🔗</span>
           </div>
+          <h1 className="text-3xl font-bold text-white tracking-tight font-display">Welcome back</h1>
+          <p className="text-slate-400 mt-1 text-sm">Sign in to your GrabGrid account</p>
+        </div>
+
+        {/* Error Alert */}
+        {error && (
+          <Alert type="error" message={error} onClose={() => setError('')} className="mb-6" />
         )}
-        <form onSubmit={handleSubmit} className="space-y-6">
+
+        <form onSubmit={handleSubmit} className="space-y-5">
+          {/* Email */}
           <div>
-            <label htmlFor="email" className="block text-sm font-semibold text-cyan-200 mb-2">USERNAME</label>
+            <label htmlFor="login-email" className="block text-sm font-medium text-slate-300 mb-2">
+              Email Address
+            </label>
             <input
+              id="login-email"
               type="email"
-              id="email"
               name="email"
-              placeholder="Enter your email"
+              autoComplete="email"
+              placeholder="you@college.edu"
               value={formData.email}
               onChange={handleChange}
               required
-              className="w-full px-4 py-3 border-none rounded-lg bg-[#23264a] text-cyan-100 focus:outline-none focus:ring-2 focus:ring-cyan-400 text-lg tracking-wide"
+              className="w-full px-4 py-3 rounded-xl text-white placeholder-slate-500 text-sm transition-all duration-200 outline-none focus:ring-2"
+              style={{
+                background: 'rgba(255,255,255,0.07)',
+                border: '1px solid rgba(255,255,255,0.12)',
+                focusRingColor: '#6366f1',
+              }}
+              onFocus={(e) => { e.target.style.borderColor = '#6366f1'; e.target.style.boxShadow = '0 0 0 3px rgba(99,102,241,0.25)'; }}
+              onBlur={(e) => { e.target.style.borderColor = 'rgba(255,255,255,0.12)'; e.target.style.boxShadow = 'none'; }}
             />
           </div>
 
+          {/* Password */}
           <div>
-            <label htmlFor="password" className="block text-sm font-semibold text-cyan-200 mb-2">PASSWORD</label>
-            <input
-              type="password"
-              id="password"
-              name="password"
-              placeholder="Enter your password"
-              value={formData.password}
-              onChange={handleChange}
-              required
-              className="w-full px-4 py-3 border-none rounded-lg bg-[#23264a] text-cyan-100 focus:outline-none focus:ring-2 focus:ring-cyan-400 text-lg tracking-wide"
-            />
+            <div className="flex items-center justify-between mb-2">
+              <label htmlFor="login-password" className="block text-sm font-medium text-slate-300">
+                Password
+              </label>
+              <Link to="/forgot-password" className="text-xs text-indigo-400 hover:text-indigo-300 transition-colors">
+                Forgot password?
+              </Link>
+            </div>
+            <div className="relative">
+              <input
+                id="login-password"
+                type={showPassword ? 'text' : 'password'}
+                name="password"
+                autoComplete="current-password"
+                placeholder="••••••••"
+                value={formData.password}
+                onChange={handleChange}
+                required
+                className="w-full px-4 py-3 pr-12 rounded-xl text-white placeholder-slate-500 text-sm transition-all duration-200 outline-none"
+                style={{
+                  background: 'rgba(255,255,255,0.07)',
+                  border: '1px solid rgba(255,255,255,0.12)',
+                }}
+                onFocus={(e) => { e.target.style.borderColor = '#6366f1'; e.target.style.boxShadow = '0 0 0 3px rgba(99,102,241,0.25)'; }}
+                onBlur={(e) => { e.target.style.borderColor = 'rgba(255,255,255,0.12)'; e.target.style.boxShadow = 'none'; }}
+              />
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-300 transition-colors text-base"
+                tabIndex={-1}
+              >
+                {showPassword ? '🙈' : '👁️'}
+              </button>
+            </div>
           </div>
 
-          <button 
-            type="submit" 
-            disabled={loading} 
-            className="w-full bg-[#0a1a3a] text-cyan-100 font-bold py-3 rounded-lg mt-2 text-lg tracking-wide hover:bg-[#1a2a5a] transition disabled:opacity-60"
+          {/* Submit Button */}
+          <button
+            type="submit"
+            disabled={loading}
+            className="w-full py-3 rounded-xl font-semibold text-white text-sm tracking-wide transition-all duration-200 mt-2 disabled:opacity-60 disabled:cursor-not-allowed"
+            style={{
+              background: loading ? 'rgba(99,102,241,0.5)' : 'linear-gradient(135deg, #6366f1, #8b5cf6)',
+              boxShadow: loading ? 'none' : '0 4px 20px rgba(99,102,241,0.4)',
+            }}
+            onMouseEnter={(e) => { if (!loading) e.target.style.transform = 'translateY(-1px)'; }}
+            onMouseLeave={(e) => { e.target.style.transform = 'translateY(0)'; }}
           >
-            {loading ? 'Logging in...' : 'SUBMIT'}
+            {loading ? (
+              <span className="flex items-center justify-center gap-2">
+                <span className="w-4 h-4 border-2 border-white/40 border-t-white rounded-full animate-spin" />
+                Signing in...
+              </span>
+            ) : (
+              'Sign In →'
+            )}
           </button>
         </form>
-        <div className="flex justify-between mt-6 text-cyan-200 text-base">
-          <Link to="/register" className="hover:underline text-cyan-300">REGISTER</Link>
-          <Link to="/forgot-password" className="hover:underline text-cyan-300">FORGOT PASSWORD</Link>
+
+        {/* Divider */}
+        <div className="flex items-center gap-3 my-6">
+          <div className="flex-1 h-px" style={{ background: 'rgba(255,255,255,0.1)' }} />
+          <span className="text-xs text-slate-500">New here?</span>
+          <div className="flex-1 h-px" style={{ background: 'rgba(255,255,255,0.1)' }} />
         </div>
+
+        {/* Register Link */}
+        <Link
+          to="/register"
+          className="block w-full text-center py-3 rounded-xl text-sm font-medium text-slate-300 hover:text-white transition-all duration-200"
+          style={{ border: '1px solid rgba(255,255,255,0.12)', background: 'rgba(255,255,255,0.03)' }}
+          onMouseEnter={(e) => { e.target.style.borderColor = 'rgba(99,102,241,0.5)'; e.target.style.background = 'rgba(99,102,241,0.08)'; }}
+          onMouseLeave={(e) => { e.target.style.borderColor = 'rgba(255,255,255,0.12)'; e.target.style.background = 'rgba(255,255,255,0.03)'; }}
+        >
+          Create a new account
+        </Link>
       </div>
     </div>
   );

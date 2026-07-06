@@ -109,7 +109,34 @@ GrabGrid/
 
 ---
 
-## 🚀 Getting Started
+## � Security
+
+**This project follows OWASP security best practices.**
+
+- ✅ **JWT Authentication** - Secure token-based authentication
+- ✅ **Environment Variables** - All secrets in `.env` (never committed)
+- ✅ **Password Hashing** - Using bcryptjs for secure password storage
+- ✅ **Input Validation** - All inputs validated for security
+- ✅ **Error Handling** - Safe error messages (no credential leaks)
+- ✅ **CORS Protection** - Cross-origin requests restricted
+
+**Security Resources:**
+- 📖 **[Security Quick Start](./SECURITY_QUICKSTART.md)** - 5-minute setup guide
+- 📖 **[Security Setup Guide](./SECURITY_SETUP.md)** - Detailed implementation
+- 📖 **[Security Best Practices](./SECURITY.md)** - Comprehensive guide
+- 📖 **[Security Index](./SECURITY_INDEX.md)** - Documentation navigation
+
+**Quick Setup:**
+```bash
+cd backend
+cp .env.example .env
+npm run validate-secrets   # Validates your security configuration
+npm run dev
+```
+
+---
+
+## �🚀 Getting Started
 
 ### Prerequisites
 

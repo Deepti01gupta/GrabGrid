@@ -1,10 +1,14 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import api from '../api/axios';
-import { useTheme } from '../context/ThemeContext';
+import { Button, Card, Input, Select, TextArea, Alert } from '../components/UI/index';
+import { componentClasses } from '../styles/designSystem';
 
+/**
+ * Modern form page to list new items to share
+ */
 const AddItem = () => {
-  const { isDark } = useTheme();
+
   const [formData, setFormData] = useState({
     itemName: '',
     category: 'Book',
@@ -32,13 +36,11 @@ const AddItem = () => {
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     if (file) {
-      // Validate file size (max 5MB)
       if (file.size > 5 * 1024 * 1024) {
         setError('Image size must be less than 5MB');
         return;
       }
 
-      // Validate file type
       if (!['image/jpeg', 'image/png', 'image/gif', 'image/webp'].includes(file.type)) {
         setError('Please upload a valid image file (JPEG, PNG, GIF, WEBP)');
         return;
@@ -68,8 +70,15 @@ const AddItem = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
-    setLoading(true);
+    setLoading(false);
 
+    // Basic date validations
+    if (new Date(formData.availableFrom) > new Date(formData.availableUntil)) {
+      setError('Available From date cannot be after Available Until date');
+      return;
+    }
+
+    setLoading(true);
     try {
       await api.post('/items', formData);
       navigate('/items');
@@ -81,213 +90,174 @@ const AddItem = () => {
   };
 
   return (
-    <div className={`min-h-screen ${isDark ? 'bg-gray-900' : 'bg-gray-50'} py-12 px-4 sm:px-6 lg:px-8`}>
-      <div className={`max-w-2xl mx-auto ${isDark ? 'bg-gray-800' : 'bg-white'} rounded-xl shadow-lg p-8`}>
-        <h2 className={`text-3xl font-bold ${isDark ? 'text-white' : 'text-gray-900'} mb-2 text-center`}>
-          Add New Item to Share
-        </h2>
-        <p className={`text-center ${isDark ? 'text-gray-300' : 'text-gray-600'} mb-8`}>Fill in the details about your item</p>
-
-        {error && (
-          <div className={`border px-4 py-3 rounded-lg mb-6 ${isDark ? 'bg-red-900 border-red-700 text-red-200' : 'bg-red-100 border-red-400 text-red-700'}`}>
-            {error}
+    <div className="min-h-screen bg-bg py-12 px-4 sm:px-6 lg:px-8 transition-colors duration-200">
+      <div className="max-w-2xl mx-auto">
+        <Card className="p-8 md:p-10 shadow-lg">
+          
+          <div className="text-center mb-8">
+            <h2 className={componentClasses.text.h2}>Add Item to Share</h2>
+            <p className={`${componentClasses.text.muted} mt-2`}>
+              List your item so classmates can borrow it
+            </p>
           </div>
-        )}
 
-        <form onSubmit={handleSubmit} className="space-y-6">
-          <div>
-            <label htmlFor="itemName" className={`block text-sm font-semibold ${isDark ? 'text-gray-200' : 'text-gray-800'} mb-2`}>
-              Item Name *
-            </label>
-            <input
+          {error && (
+            <Alert
+              type="error"
+              title="Failed to Save"
+              message={error}
+              onClose={() => setError('')}
+              className="mb-6"
+            />
+          )}
+
+          <form onSubmit={handleSubmit} className="space-y-6">
+            <Input
+              label="Item Name"
               type="text"
-              id="itemName"
               name="itemName"
-              placeholder="e.g., Data Structures Book"
+              placeholder="e.g. Data Structures & Algorithms Textbook"
               value={formData.itemName}
               onChange={handleChange}
               required
-              className={`w-full px-4 py-2 border rounded-lg focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200 ${isDark ? 'bg-gray-700 border-gray-600 text-white placeholder-gray-400' : 'bg-white border-gray-300 text-gray-900'}`}
             />
-          </div>
 
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <label htmlFor="category" className={`block text-sm font-semibold ${isDark ? 'text-gray-200' : 'text-gray-800'} mb-2`}>
-                Category *
-              </label>
-              <select
-                id="category"
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <Select
+                label="Category"
                 name="category"
                 value={formData.category}
                 onChange={handleChange}
                 required
-                className={`w-full px-4 py-2 border rounded-lg focus:outline-none focus:border-blue-500 ${isDark ? 'bg-gray-700 border-gray-600 text-white' : 'bg-white border-gray-300 text-gray-900'}`}
-              >
-                <option value="Book">Book</option>
-                <option value="Lab Kit">Lab Kit</option>
-                <option value="Appliance">Appliance</option>
-                <option value="Sports Equipment">Sports Equipment</option>
-                <option value="Other">Other</option>
-              </select>
-            </div>
+                options={[
+                  { value: 'Book', label: 'Book' },
+                  { value: 'Lab Kit', label: 'Lab Kit' },
+                  { value: 'Appliance', label: 'Appliance' },
+                  { value: 'Sports Equipment', label: 'Sports Equipment' },
+                  { value: 'Other', label: 'Other' },
+                ]}
+              />
 
-            <div>
-              <label htmlFor="condition" className={`block text-sm font-semibold ${isDark ? 'text-gray-200' : 'text-gray-800'} mb-2`}>
-                Condition *
-              </label>
-              <select
-                id="condition"
+              <Select
+                label="Condition"
                 name="condition"
                 value={formData.condition}
                 onChange={handleChange}
                 required
-                className={`w-full px-4 py-2 border rounded-lg focus:outline-none focus:border-blue-500 ${isDark ? 'bg-gray-700 border-gray-600 text-white' : 'bg-white border-gray-300 text-gray-900'}`}
-              >
-                <option value="New">New</option>
-                <option value="Good">Good</option>
-                <option value="Used">Used</option>
-              </select>
+                options={[
+                  { value: 'New', label: 'New' },
+                  { value: 'Good', label: 'Good' },
+                  { value: 'Used', label: 'Used' },
+                ]}
+              />
             </div>
-          </div>
 
-          <div>
-            <label htmlFor="description" className={`block text-sm font-semibold ${isDark ? 'text-gray-200' : 'text-gray-800'} mb-2`}>
-              Description *
-            </label>
-            <textarea
-              id="description"
+            <TextArea
+              label="Description"
               name="description"
-              placeholder="Describe your item in detail..."
-              rows="4"
+              placeholder="Provide a description of the item, condition details, and any guidelines..."
+              rows={4}
               value={formData.description}
               onChange={handleChange}
               required
-              className={`w-full px-4 py-2 border rounded-lg focus:outline-none focus:border-blue-500 resize-none ${isDark ? 'bg-gray-700 border-gray-600 text-white placeholder-gray-400' : 'bg-white border-gray-300 text-gray-900'}`}
             />
-          </div>
 
-          <div>
-            <label htmlFor="itemImage" className={`block text-sm font-semibold ${isDark ? 'text-gray-200' : 'text-gray-800'} mb-2`}>
-              Item Image (Optional)
-            </label>
-            <div className={`border-2 border-dashed rounded-lg p-6 text-center cursor-pointer transition ${isDark ? 'border-gray-600 hover:border-blue-500 bg-gray-700' : 'border-gray-300 hover:border-blue-500 bg-gray-50'}`}>
-              <input
-                type="file"
-                id="itemImage"
-                name="itemImage"
-                accept="image/*"
-                onChange={handleImageChange}
-                className="hidden"
-              />
-              <label htmlFor="itemImage" className="cursor-pointer">
-                {imagePreview ? (
-                  <div className="space-y-2">
-                    <img src={imagePreview} alt="Preview" className="h-32 w-32 object-cover rounded-lg mx-auto" />
-                    <p className={`text-sm ${isDark ? 'text-gray-300' : 'text-gray-600'}`}>Click to change image</p>
-                  </div>
-                ) : (
-                  <div className="space-y-2">
-                    <svg className={`mx-auto h-12 w-12 ${isDark ? 'text-gray-400' : 'text-gray-400'}`} stroke="currentColor" fill="none" viewBox="0 0 48 48">
-                      <path d="M28 8H12a4 4 0 00-4 4v20a4 4 0 004 4h24a4 4 0 004-4V20m-4-8l-6 6m6-6l-6-6m6 6h4" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-                    </svg>
-                    <p className={`font-medium ${isDark ? 'text-gray-200' : 'text-gray-700'}`}>Upload Item Image</p>
-                    <p className={`text-xs ${isDark ? 'text-gray-400' : 'text-gray-500'}`}>PNG, JPG, GIF, WEBP up to 5MB</p>
-                  </div>
-                )}
-              </label>
-            </div>
-            {imagePreview && (
-              <button
-                type="button"
-                onClick={removeImage}
-                className={`mt-2 text-sm ${isDark ? 'text-red-400 hover:text-red-300' : 'text-red-600 hover:text-red-700'} font-medium`}
-              >
-                Remove Image
-              </button>
-            )}
-          </div>
-
-          <div className={`${isDark ? 'bg-blue-900 border-blue-700' : 'bg-blue-50 border-blue-300'} border rounded-lg p-4 mb-6`}>
-            <p className={`text-sm font-medium ${isDark ? 'text-blue-200' : 'text-blue-700'}`}>
-              ℹ️ Hostel Block and Room Number will be auto-populated from your profile
-            </p>
-          </div>
-
-          <div className="grid grid-cols-2 gap-4">
+            {/* Premium File Upload Dropzone */}
             <div>
-              <label htmlFor="borrowDuration" className={`block text-sm font-semibold ${isDark ? 'text-gray-200' : 'text-gray-800'} mb-2`}>
-                Borrow Duration (days) *
+              <label className="block text-sm font-medium text-text-secondary mb-2">
+                Item Image
               </label>
-              <input
+              <div className="border-2 border-dashed border-border hover:border-primary rounded-xl p-6 text-center cursor-pointer transition-colors duration-200 bg-surface/30">
+                <input
+                  type="file"
+                  id="itemImage"
+                  name="itemImage"
+                  accept="image/*"
+                  onChange={handleImageChange}
+                  className="hidden"
+                />
+                <label htmlFor="itemImage" className="cursor-pointer block w-full h-full">
+                  {imagePreview ? (
+                    <div className="space-y-3">
+                      <img src={imagePreview} alt="Preview" className="h-36 w-36 object-cover rounded-lg mx-auto shadow-sm" />
+                      <p className="text-sm text-text-secondary">Click here to change the image</p>
+                    </div>
+                  ) : (
+                    <div className="space-y-2">
+                      <div className="text-4xl opacity-55">📷</div>
+                      <p className="font-semibold text-text-primary">Upload Item Photograph</p>
+                      <p className="text-xs text-text-muted">Supports JPEG, PNG, GIF, WEBP up to 5MB</p>
+                    </div>
+                  )}
+                </label>
+              </div>
+              {imagePreview && (
+                <div className="mt-2 flex justify-end">
+                  <Button variant="ghost" size="sm" className="text-red-500 hover:text-red-600" onClick={removeImage}>
+                    ✕ Remove Image
+                  </Button>
+                </div>
+              )}
+            </div>
+
+            {/* Note box */}
+            <Alert
+              type="info"
+              message="Your Hostel Block and Room Number will be automatically attached from your profile so classmates can locate you easily."
+            />
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <Input
+                label="Borrow Duration (days max)"
                 type="number"
-                id="borrowDuration"
                 name="borrowDuration"
                 min="1"
                 max="90"
                 value={formData.borrowDuration}
                 onChange={handleChange}
                 required
-                className={`w-full px-4 py-2 border rounded-lg focus:outline-none focus:border-blue-500 ${isDark ? 'bg-gray-700 border-gray-600 text-white' : 'bg-white border-gray-300 text-gray-900'}`}
               />
-            </div>
 
-            <div>
-              <label htmlFor="securityDeposit" className={`block text-sm font-semibold ${isDark ? 'text-gray-200' : 'text-gray-800'} mb-2`}>
-                Security Deposit (₹)
-              </label>
-              <input
+              <Input
+                label="Security Deposit (optional, ₹)"
                 type="number"
-                id="securityDeposit"
                 name="securityDeposit"
                 min="0"
                 value={formData.securityDeposit}
                 onChange={handleChange}
-                className={`w-full px-4 py-2 border rounded-lg focus:outline-none focus:border-blue-500 ${isDark ? 'bg-gray-700 border-gray-600 text-white' : 'bg-white border-gray-300 text-gray-900'}`}
               />
             </div>
-          </div>
 
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <label htmlFor="availableFrom" className={`block text-sm font-semibold ${isDark ? 'text-gray-200' : 'text-gray-800'} mb-2`}>
-                Available From *
-              </label>
-              <input
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <Input
+                label="Available From"
                 type="date"
-                id="availableFrom"
                 name="availableFrom"
                 value={formData.availableFrom}
                 onChange={handleChange}
                 required
-                className={`w-full px-4 py-2 border rounded-lg focus:outline-none focus:border-blue-500 ${isDark ? 'bg-gray-700 border-gray-600 text-white' : 'bg-white border-gray-300 text-gray-900'}`}
               />
-            </div>
 
-            <div>
-              <label htmlFor="availableUntil" className={`block text-sm font-semibold ${isDark ? 'text-gray-200' : 'text-gray-800'} mb-2`}>
-                Available Until *
-              </label>
-              <input
+              <Input
+                label="Available Until"
                 type="date"
-                id="availableUntil"
                 name="availableUntil"
                 value={formData.availableUntil}
                 onChange={handleChange}
                 required
-                className={`w-full px-4 py-2 border rounded-lg focus:outline-none focus:border-blue-500 ${isDark ? 'bg-gray-700 border-gray-600 text-white' : 'bg-white border-gray-300 text-gray-900'}`}
               />
             </div>
-          </div>
 
-          <button
-            type="submit"
-            disabled={loading}
-            className="w-full bg-gradient-to-r from-blue-600 to-purple-700 text-white font-bold py-3 rounded-lg hover:shadow-lg transition disabled:opacity-60"
-          >
-            {loading ? 'Adding Item...' : 'Add Item'}
-          </button>
-        </form>
+            <Button
+              type="submit"
+              variant="primary"
+              className="w-full"
+              disabled={loading}
+            >
+              {loading ? 'Publishing Listing...' : '🚀 Publish Item Listing'}
+            </Button>
+          </form>
+        </Card>
       </div>
     </div>
   );

@@ -72,10 +72,10 @@ const ItemDetails = () => {
         <div className={`text-center p-8 rounded-lg ${isDark ? 'bg-gray-800' : 'bg-white'}`}>
           <h2 className={`text-2xl font-bold ${isDark ? 'text-red-400' : 'text-red-600'}`}>Item not found</h2>
           <button
-            onClick={() => navigate('/items')}
+            onClick={() => navigate(-1)}
             className="mt-4 bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition"
           >
-            Back to Items
+            Go Back
           </button>
         </div>
       </div>
@@ -86,10 +86,10 @@ const ItemDetails = () => {
     <div className={`min-h-screen ${isDark ? 'bg-gray-900' : 'bg-gray-50'} py-12 px-4 sm:px-6 lg:px-8`}>
       <div className="max-w-5xl mx-auto">
         <button
-          onClick={() => navigate('/items')}
+          onClick={() => navigate(-1)}
           className={`mb-6 flex items-center gap-2 ${isDark ? 'text-blue-400 hover:text-blue-300' : 'text-blue-600 hover:text-blue-700'} font-semibold transition`}
         >
-          ← Back to Items
+          ← Back
         </button>
 
         <div className={`${isDark ? 'bg-gray-800' : 'bg-white'} rounded-xl shadow-2xl overflow-hidden`}>

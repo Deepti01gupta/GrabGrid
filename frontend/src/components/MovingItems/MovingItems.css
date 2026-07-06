@@ -1,0 +1,157 @@
+/**
+ * MovingItems Animation Styles
+ * Smooth infinite horizontal scrolling with pause on hover
+ */
+
+.moving-items-container {
+  --scroll-speed: 30s;
+  --items-count: 12;
+  --item-width: 200px;
+  
+  animation: scroll-left var(--scroll-speed) linear infinite;
+  will-change: transform;
+  backface-visibility: hidden;
+}
+
+/* Smooth left-to-right infinite scrolling animation */
+@keyframes scroll-left {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    /* Calculate total width to scroll: approximately one set of items */
+    transform: translateX(calc(-100% / 3));
+  }
+}
+
+/* Pause animation on hover */
+.moving-items-container.paused {
+  animation-play-state: paused;
+}
+
+/* Individual item styling */
+.moving-item {
+  font-weight: 600;
+  letter-spacing: 0.3px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+}
+
+.moving-item:hover {
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
+  transform: scale(1.1) translateY(-2px);
+}
+
+.moving-item::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 9999px;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.2) 0%, rgba(255, 255, 255, 0) 100%);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.moving-item:hover::before {
+  opacity: 1;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .moving-items-container {
+    --scroll-speed: 25s;
+    gap: 0.75rem;
+  }
+
+  .moving-item {
+    padding: 0.5rem 1rem;
+    font-size: 0.875rem;
+  }
+
+  .moving-item span:first-child {
+    font-size: 1rem;
+  }
+}
+
+@media (max-width: 640px) {
+  .moving-items-container {
+    --scroll-speed: 20s;
+    gap: 0.5rem;
+    padding: 1rem;
+  }
+
+  .moving-item {
+    padding: 0.4rem 0.8rem;
+    font-size: 0.75rem;
+  }
+
+  .moving-item span:first-child {
+    font-size: 0.875rem;
+  }
+}
+
+/* Smooth scrolling performance optimization */
+@supports (scroll-behavior: smooth) {
+  .moving-items-container {
+    scroll-behavior: smooth;
+  }
+}
+
+/* Hardware acceleration for better performance */
+@media (prefers-reduced-motion: no-preference) {
+  .moving-items-container {
+    transform: translate3d(0, 0, 0);
+  }
+
+  .moving-item {
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+/* Respects user's motion preferences */
+@media (prefers-reduced-motion: reduce) {
+  .moving-items-container {
+    animation: none;
+  }
+
+  .moving-items-container.paused {
+    animation-play-state: running;
+  }
+
+  .moving-item {
+    transition: none;
+  }
+}
+
+/* Dark mode specific animations */
+@media (prefers-color-scheme: dark) {
+  .moving-item {
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  }
+
+  .moving-item:hover {
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.5);
+  }
+}
+
+/* Smooth scrolling fallback for older browsers */
+@-webkit-keyframes scroll-left {
+  0% {
+    -webkit-transform: translateX(0);
+    transform: translateX(0);
+  }
+  100% {
+    -webkit-transform: translateX(calc(-100% / 3));
+    transform: translateX(calc(-100% / 3));
+  }
+}
+
+@keyframes scroll-left {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(calc(-100% / 3));
+  }
+}

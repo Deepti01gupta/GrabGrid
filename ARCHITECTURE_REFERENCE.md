@@ -559,7 +559,7 @@ MyRequests.jsx (Main page)
 ```bash
 # .env (backend)
 MONGODB_URI=mongodb://localhost:27017/grabbid_db
-JWT_SECRET=your-super-secret-key-change-in-production
+JWT_SECRET=your_generated_32_character_secret_key_here
 PORT=5000
 NODE_ENV=development
 

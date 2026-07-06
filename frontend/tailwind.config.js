@@ -8,9 +8,32 @@ export default {
   theme: {
     extend: {
       colors: {
-        primary: '#667eea',
-        secondary: '#764ba2',
-        accent: '#ffc107',
+        bg: 'var(--color-bg)',
+        surface: 'var(--color-surface)',
+        card: 'var(--color-card)',
+        'card-border': 'var(--color-card-border)',
+        primary: {
+          DEFAULT: 'var(--color-primary)',
+          hover: 'var(--color-primary-hover)',
+        },
+        secondary: {
+          DEFAULT: 'var(--color-secondary)',
+          hover: 'var(--color-secondary-hover)',
+        },
+        accent: {
+          DEFAULT: 'var(--color-accent)',
+          hover: 'var(--color-accent-hover)',
+        },
+        success: {
+          DEFAULT: 'var(--color-success)',
+          hover: 'var(--color-success-hover)',
+        },
+        error: 'var(--color-error)',
+        warning: 'var(--color-warning)',
+        'text-primary': 'var(--color-text-primary)',
+        'text-secondary': 'var(--color-text-secondary)',
+        'text-muted': 'var(--color-text-muted)',
+        border: 'var(--color-border)',
       },
       animation: {
         float: 'float 3s ease-in-out infinite',
@@ -28,7 +51,7 @@ export default {
         },
       },
       fontFamily: {
-        'display': ['Poppins', 'system-ui', 'sans-serif'],
+        'display': ['"Plus Jakarta Sans"', 'system-ui', 'sans-serif'],
         'body': ['Inter', 'system-ui', 'sans-serif'],
       },
     },

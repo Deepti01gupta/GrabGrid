@@ -37,3 +37,6 @@ Thumbs.db
 *.db
 *.sqlite
 mongo_data/
+
+# Documentation
+*.md

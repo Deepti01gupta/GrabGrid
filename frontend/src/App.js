@@ -4,6 +4,7 @@ import { AuthProvider } from './context/AuthContext';
 
 // Components
 import Navbar from './components/Navbar';
+import Footer from './components/Footer';
 import ProtectedRoute from './components/ProtectedRoute';
 
 // Pages
@@ -14,16 +15,24 @@ import Dashboard from './pages/Dashboard';
 import Items from './pages/Items';
 import AddItem from './pages/AddItem';
 import ItemDetails from './pages/ItemDetails';
+import EditItem from './pages/EditItem';
 import MyRequests from './pages/MyRequests';
 import Profile from './pages/Profile';
 
+/**
+ * Main App Component
+ * Handles routing and layout structure
+ */
 function App() {
   return (
     <Router>
       <AuthProvider>
-        <div className="flex flex-col min-h-screen overflow-hidden">
+        <div className="flex flex-col min-h-screen bg-neutral-50 dark:bg-neutral-900 transition-colors duration-200">
+          {/* Navigation Bar */}
           <Navbar />
-          <main className="flex-1 overflow-y-auto pb-40">
+
+          {/* Main Content Area - Add top padding to account for fixed navbar */}
+          <main className="flex-1 pt-16">
             <Routes>
               {/* Public Routes */}
               <Route path="/" element={<Home />} />
@@ -59,6 +68,15 @@ function App() {
               />
 
               <Route
+                path="/items/edit/:itemId"
+                element={
+                  <ProtectedRoute>
+                    <EditItem />
+                  </ProtectedRoute>
+                }
+              />
+
+              <Route
                 path="/add-item"
                 element={
                   <ProtectedRoute>
@@ -75,6 +93,7 @@ function App() {
                   </ProtectedRoute>
                 }
               />
+
               <Route
                 path="/profile"
                 element={
@@ -85,6 +104,9 @@ function App() {
               />
             </Routes>
           </main>
+
+          {/* Footer */}
+          <Footer />
         </div>
       </AuthProvider>
     </Router>

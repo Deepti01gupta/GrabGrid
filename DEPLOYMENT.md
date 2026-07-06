@@ -96,7 +96,7 @@ Follow the [Database Setup section](#database-setup-mongodb-atlas) below.
    ```
    PORT=5000
    NODE_ENV=production
-   MONGODB_URI=mongodb+srv://username:password@cluster.mongodb.net/grabgrid
+   MONGODB_URI=mongodb+srv://YOUR_USERNAME:YOUR_PASSWORD@your-cluster.mongodb.net/grabgrid
    JWT_SECRET=use_a_very_strong_secret_key_here_min_32_chars
    JWT_EXPIRE=7d
    CORS_ORIGIN=https://yourdomain.vercel.app
@@ -228,7 +228,7 @@ vercel --prod
 2. Choose "Connect your application"
 3. Copy connection string:
    ```
-   mongodb+srv://grabgrid_user:PASSWORD@cluster.mongodb.net/grabgrid
+   mongodb+srv://YOUR_USERNAME:YOUR_PASSWORD@your-cluster.mongodb.net/grabgrid
    ```
 4. Replace `PASSWORD` with your database password
 5. Replace `/grabgrid` with your database name
@@ -258,7 +258,8 @@ PORT=5000
 NODE_ENV=production
 
 # Database - MongoDB Atlas
-MONGODB_URI=mongodb+srv://grabgrid_user:password@cluster.mongodb.net/grabgrid
+# Replace with your actual credentials from MongoDB Atlas dashboard
+MONGODB_URI=mongodb+srv://YOUR_USERNAME:YOUR_PASSWORD@your-cluster.mongodb.net/grabgrid
 
 # JWT - Generate using node:
 # require('crypto').randomBytes(32).toString('hex')
@@ -451,10 +452,10 @@ Both Render and Vercel support automatic deployments:
 
 ```bash
 # ✅ DO: Use environment variables
-MONGODB_URI=mongodb+srv://user:password@cluster.mongodb.net/db
+MONGODB_URI=mongodb+srv://YOUR_USERNAME:YOUR_PASSWORD@your-cluster.mongodb.net/database-name
 
 # ❌ DON'T: Hardcode secrets
-const uri = "mongodb+srv://user:password@cluster.mongodb.net/db";
+const uri = process.env.MONGODB_URI || "mongodb://localhost:27017/database-name";
 ```
 
 ### CORS Configuration
@@ -471,10 +472,12 @@ CORS_ORIGIN=*
 
 ```bash
 # ✅ Use strong random key (minimum 32 characters)
-JWT_SECRET=a1b2c3d4e5f6g7h8i9j0k1l2m3n4o5p6q7r8s9t0
+# Generate with: node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
+JWT_SECRET=your_generated_32_character_secret_key_here
 
 # ❌ Don't use simple passwords
-JWT_SECRET=password123
+# NEVER use weak secrets like 'password123'. Generate a strong key instead.
+JWT_SECRET=your_generated_32_character_secret_key_here
 ```
 
 ### Database Access

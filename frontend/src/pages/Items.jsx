@@ -1,11 +1,15 @@
 import React, { useState, useEffect, useRef } from 'react';
 import api from '../api/axios';
 import ItemCard from '../components/ItemCard';
-import Loader from '../components/Loader';
-import { useTheme } from '../context/ThemeContext';
+import { Input, Select, Button, EmptyState, Alert, Skeleton } from '../components/UI/index';
+import { componentClasses } from '../styles/designSystem';
 
+/**
+ * Modern browse items page for GrabGrid
+ * Uses unified design system components and responsive grids
+ */
 const Items = () => {
-  const { isDark } = useTheme();
+
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -25,15 +29,16 @@ const Items = () => {
         ...prev,
         itemName: searchInput,
       }));
-    }, 500); // Wait 500ms after user stops typing
+    }, 400); // Wait 400ms after user stops typing
 
     return () => clearTimeout(debounceTimer.current);
   }, [searchInput]);
 
-  // Fetch items when filters change (NOT on every keystroke)
+  // Fetch items when filters change
   useEffect(() => {
     const fetchItems = async () => {
       setLoading(true);
+      setError('');
       try {
         const params = new URLSearchParams();
         if (filters.category) params.append('category', filters.category);
@@ -62,58 +67,82 @@ const Items = () => {
     });
   };
 
-  if (loading) return <Loader />;
+  const categoryOptions = [
+    { value: '', label: 'All Categories' },
+    { value: 'Book', label: 'Book' },
+    { value: 'Lab Kit', label: 'Lab Kit' },
+    { value: 'Appliance', label: 'Appliance' },
+    { value: 'Sports Equipment', label: 'Sports Equipment' },
+    { value: 'Other', label: 'Other' },
+  ];
 
   return (
-    <div className={`min-h-screen ${isDark ? 'bg-gray-900' : 'bg-gray-50'} py-12 px-4 sm:px-6 lg:px-8`}>
-      <div className="max-w-7xl mx-auto">
-        <h1 className={`text-4xl font-bold ${isDark ? 'text-white' : 'text-gray-900'} text-center mb-12`}>
-          Browse Shared Items
-        </h1>
+    <div className="min-h-screen bg-bg py-12 transition-colors duration-200">
+      <div className={componentClasses.container}>
+        
+        {/* Page Header */}
+        <div className="text-center mb-12">
+          <h1 className={componentClasses.text.h1}>Browse Shared Items</h1>
+          <p className={`${componentClasses.text.muted} mt-2 text-lg`}>
+            Borrow educational materials, sports gear, and appliances from your hostel mates
+          </p>
+        </div>
 
         {/* Filters Section */}
-        <div className={`${isDark ? 'bg-gray-800' : 'bg-white'} rounded-lg shadow-lg p-6 mb-12`}>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            <input
+        <div className="bg-card border border-card-border rounded-xl p-6 mb-12 shadow-sm">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 items-end">
+            <Input
+              label="Search Items"
               type="text"
-              placeholder="Search by item name..."
+              placeholder="e.g. chemistry kit, lab book..."
               value={searchInput}
               onChange={handleSearchChange}
-              className={`px-4 py-2 border rounded-lg focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200 ${isDark ? 'bg-gray-700 border-gray-600 text-white placeholder-gray-400' : 'bg-white border-gray-300 text-gray-900'}`}
             />
 
-            <select
+            <Select
+              label="Category"
               name="category"
               value={filters.category}
               onChange={handleFilterChange}
-              className={`px-4 py-2 border rounded-lg focus:outline-none focus:border-blue-500 ${isDark ? 'bg-gray-700 border-gray-600 text-white' : 'bg-white border-gray-300 text-gray-900'}`}
-            >
-              <option value="">All Categories</option>
-              <option value="Book">Book</option>
-              <option value="Lab Kit">Lab Kit</option>
-              <option value="Appliance">Appliance</option>
-              <option value="Sports Equipment">Sports Equipment</option>
-              <option value="Other">Other</option>
-            </select>
+              options={categoryOptions}
+            />
           </div>
         </div>
 
+        {/* Error Alert */}
         {error && (
-          <div className={`border px-4 py-3 rounded-lg mb-6 ${isDark ? 'bg-red-900 border-red-700 text-red-200' : 'bg-red-100 border-red-400 text-red-700'}`}>
-            {error}
-          </div>
+          <Alert
+            type="error"
+            title="Error Fetching Listings"
+            message={error}
+            onClose={() => setError('')}
+            className="mb-8"
+          />
         )}
 
-        {/* Items Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {items.length > 0 ? (
-            items.map((item) => <ItemCard key={item._id} item={item} />)
-          ) : (
-            <div className="col-span-full text-center py-12">
-              <p className={`text-xl ${isDark ? 'text-gray-300' : 'text-gray-600'}`}>No items found matching your filters</p>
-            </div>
-          )}
-        </div>
+        {/* Loading / Grid */}
+        {loading ? (
+          <div className={componentClasses.grid.cols3}>
+            <Skeleton height="20rem" count={3} />
+          </div>
+        ) : items.length > 0 ? (
+          <div className={componentClasses.grid.cols3}>
+            {items.map((item) => (
+              <ItemCard key={item._id} item={item} type="browse" />
+            ))}
+          </div>
+        ) : (
+          <EmptyState
+            icon="🔍"
+            title="No items found"
+            description="We couldn't find any listings matching your search/filters."
+            action={
+              <Button variant="ghost" onClick={() => { setSearchInput(''); setFilters({ category: '', itemName: '' }); }}>
+                Clear Filters
+              </Button>
+            }
+          />
+        )}
       </div>
     </div>
   );
