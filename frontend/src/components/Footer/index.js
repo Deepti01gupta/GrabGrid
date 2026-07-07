@@ -84,55 +84,26 @@ const Footer = () => {
               Share, borrow, and connect with your community. Make the most of what you have.
             </p>
             <div className="flex gap-4 mt-6">
-              <a 
-                href="#" 
-                className="transition-colors text-lg"
-                style={{
-                  color: isDark ? '#395B64' : '#8B8B8B',
-                  textDecoration: 'none'
-                }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.color = isDark ? '#6482AD' : '#5C8374';
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.color = isDark ? '#395B64' : '#8B8B8B';
-                }}
-              >
-                𝕏
-              </a>
-              <a 
-                href="#" 
-                className="transition-colors text-lg"
-                style={{
-                  color: isDark ? '#395B64' : '#8B8B8B',
-                  textDecoration: 'none'
-                }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.color = isDark ? '#6482AD' : '#5C8374';
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.color = isDark ? '#395B64' : '#8B8B8B';
-                }}
-              >
-                👾
-              </a>
-              <a 
-                href="#" 
-                className="transition-colors text-lg"
-                style={{
-                  color: isDark ? '#395B64' : '#8B8B8B',
-                  textDecoration: 'none'
-                }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.color = isDark ? '#6482AD' : '#5C8374';
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.color = isDark ? '#395B64' : '#8B8B8B';
-                }}
-              >
-                💬
-              </a>
-            </div>
+  {["𝕏", "👾", "💬"].map((icon, index) => (
+    <button
+      key={index}
+      type="button"
+      aria-label={`Social Icon ${index + 1}`}
+      className="transition-colors text-lg bg-transparent border-none cursor-pointer p-0"
+      style={{
+        color: isDark ? "#395B64" : "#8B8B8B",
+      }}
+      onMouseEnter={(e) => {
+        e.currentTarget.style.color = isDark ? "#6482AD" : "#5C8374";
+      }}
+      onMouseLeave={(e) => {
+        e.currentTarget.style.color = isDark ? "#395B64" : "#8B8B8B";
+      }}
+    >
+      {icon}
+    </button>
+  ))}
+</div>
           </div>
 
           {/* Footer Links */}
