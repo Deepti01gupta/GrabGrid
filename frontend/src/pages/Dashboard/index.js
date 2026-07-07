@@ -15,7 +15,7 @@ const Dashboard = () => {
   const { user } = useAuth();
   const { isDark } = useTheme();
   const navigate = useNavigate();
-  
+
   // State Management
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -32,6 +32,7 @@ const Dashboard = () => {
   });
 
   const [myRequests, setMyRequests] = useState([]);
+  const userInitial = user?.name?.trim()?.charAt(0)?.toUpperCase() || 'U';
 
   // Fetch dashboard data on mount
   useEffect(() => {
@@ -42,12 +43,12 @@ const Dashboard = () => {
     try {
       setLoading(true);
       setError(null);
-      
+
       const [dashRes, reqRes] = await Promise.all([
         api.get('/dashboard'),
         api.get('/borrow/my-borrows'),
       ]);
-      
+
       setDashboard(dashRes.data);
       setMyRequests(reqRes.data.borrows || []);
     } catch (err) {
@@ -133,7 +134,7 @@ const Dashboard = () => {
 
   return (
     <div className={`min-h-screen ${isDark ? 'bg-neutral-900' : 'bg-neutral-50'} transition-colors duration-200`}>
-      
+
       {/* Header Section */}
       <div className={`${isDark ? 'bg-neutral-800 border-neutral-700' : 'bg-white border-neutral-200'} border-b`}>
         <div className={componentClasses.container + ' py-8'}>
@@ -164,11 +165,10 @@ const Dashboard = () => {
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
-                className={`px-4 py-4 text-sm font-medium whitespace-nowrap border-b-2 transition-colors duration-200 flex items-center gap-2 ${
-                  activeTab === tab.id
+                className={`px-4 py-4 text-sm font-medium whitespace-nowrap border-b-2 transition-colors duration-200 flex items-center gap-2 ${activeTab === tab.id
                     ? 'border-blue-600 text-blue-600 dark:text-teal-400'
                     : `border-transparent ${isDark ? 'text-neutral-400 hover:text-white' : 'text-neutral-600 hover:text-neutral-900'}`
-                }`}
+                  }`}
               >
                 {tab.icon}
                 {tab.label}
@@ -189,39 +189,46 @@ const Dashboard = () => {
         {/* OVERVIEW TAB */}
         {activeTab === 'overview' && (
           <div className="space-y-8">
-            
+
             {/* Profile Information Card */}
-            <Card className="overflow-hidden">
-              <div className="h-24 bg-gradient-to-r from-blue-500 to-teal-500 relative" />
-              
+            <Card className="overflow-hidden border border-neutral-200/70 dark:border-neutral-700 rounded-xl">
+              {/* Cover */}
+              <div className="h-32 bg-gradient-to-r from-[#6482AD] via-[#7FA1C3] to-[#5C8374]" />
+
+              {/* Content */}
               <div className="px-6 pb-6">
                 {/* Profile Header */}
-                <div className="flex flex-col sm:flex-row gap-4 -mt-12 mb-8">
-                  <div className="w-24 h-24 bg-gradient-to-br from-blue-600 to-teal-500 rounded-full flex items-center justify-center text-4xl font-bold text-white flex-shrink-0">
-                    {user?.name?.charAt(0).toUpperCase()}
+                <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center">
+                  {/* Avatar */}
+                  <div className="-mt-12 w-24 h-24 bg-gradient-to-br from-[#6482AD] to-[#5C8374] rounded-full flex items-center justify-center text-4xl font-bold text-white flex-shrink-0 ring-4 ring-white dark:ring-neutral-900 shadow-lg">
+                    {userInitial}
                   </div>
-                  <div className="flex-1 mt-8 sm:mt-0">
+
+                  <div className="flex-1 pt-2">
                     <h2 className={componentClasses.text.h3}>{user?.name}</h2>
                     <p className={componentClasses.text.muted}>{user?.email}</p>
                   </div>
                 </div>
 
                 {/* Personal Details */}
-                <div>
-                  <h3 className={componentClasses.text.h4 + ' mb-4 text-neutral-700 dark:text-neutral-300'}>
+                <div className="mt-8">
+                  <h3 className={`${componentClasses.text.h4} mb-4`}>
                     Personal Information
                   </h3>
-                  <div className={componentClasses.grid.cols2 + ' gap-4'}>
+
+                  <div className={`${componentClasses.grid.cols2} gap-6`}>
                     {[
-                      { label: 'Full Name', value: user?.name },
-                      { label: 'Email', value: user?.email },
-                      { label: 'Phone Number', value: user?.phoneNumber },
-                      { label: 'Hostel Block', value: user?.hostelBlock },
-                      { label: 'Room Number', value: user?.roomNumber },
-                    ].map(field => (
+                      { label: "Full Name", value: user?.name },
+                      { label: "Email", value: user?.email },
+                      { label: "Phone Number", value: user?.phoneNumber },
+                      { label: "Hostel Block", value: user?.hostelBlock },
+                      { label: "Room Number", value: user?.roomNumber },
+                    ].map((field) => (
                       <div key={field.label}>
                         <p className={componentClasses.text.muted}>{field.label}</p>
-                        <p className="font-medium text-neutral-900 dark:text-white mt-1">{field.value || '—'}</p>
+                        <p className="mt-1 font-medium text-neutral-900 dark:text-white">
+                          {field.value || "—"}
+                        </p>
                       </div>
                     ))}
                   </div>
@@ -232,16 +239,16 @@ const Dashboard = () => {
             {/* Credibility & Statistics */}
             <div>
               <h2 className={componentClasses.text.h2 + ' mb-6'}>Your Statistics</h2>
-              
+
               <div className={componentClasses.grid.cols4}>
                 <StatCard
-                  icon="⭐"
+                  icon="🛡️"
                   label="Trust Score"
                   value={user?.trustScore || 0}
                   color="blue"
                 />
                 <StatCard
-                  icon="⭐"
+                  icon="✨"
                   label="Avg. Rating"
                   value={(user?.averageRating || 0).toFixed(1)}
                   color="purple"
@@ -286,15 +293,15 @@ const Dashboard = () => {
             </div>
 
             {/* Quick Actions */}
-            <div className="bg-gradient-to-r from-blue-600 to-teal-500 rounded-xl p-8 text-white">
-              <h3 className="text-2xl font-bold mb-4">Ready to share more? 🚀</h3>
-              <p className="opacity-90 mb-6">Add your items to help others and earn credits!</p>
+            <div className="bg-gradient-to-r from-[#6482AD] to-[#5C8374] rounded-xl p-8 text-white shadow-lg">
+              <h3 className="text-2xl font-bold mb-4">Ready to share more?</h3>
+              <p className="opacity-90 mb-6 max-w-2xl">Add items you already own so others can borrow them and you can earn credits faster.</p>
               <Button
                 variant="primary"
                 onClick={() => navigate('/add-item')}
                 icon="➕"
               >
-                Add Your First Item
+                Add an Item
               </Button>
             </div>
           </div>
