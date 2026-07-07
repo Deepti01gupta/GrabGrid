@@ -323,7 +323,7 @@ export const componentClasses = {
 // DEFAULT EXPORT
 // ============================================
 
-export default {
+export const UIComponents = {
   lightTheme,
   darkTheme,
   colors,

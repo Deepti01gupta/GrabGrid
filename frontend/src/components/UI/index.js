@@ -235,13 +235,7 @@ export const EmptyState = ({ icon, title, description, action }) => {
  * Statistics display card
  */
 export const StatCard = ({ icon, label, value, trend, color = 'blue' }) => {
-  const colorClasses = {
-    blue: 'from-sky-500 to-blue-600',
-    green: 'from-green-500 to-emerald-600',
-    purple: 'from-purple-500 to-indigo-600',
-    orange: 'from-orange-500 to-red-600',
-  };
-
+ 
   return (
     <Card className="bg-gradient-to-br from-neutral-50 to-neutral-100 dark:from-neutral-800 dark:to-neutral-700 overflow-hidden">
       <div className="flex items-center justify-between p-6">
@@ -309,7 +303,7 @@ export const Tooltip = ({ text, children }) => {
   );
 };
 
-export default {
+export const UIComponents = {
   Button,
   Card,
   Input,
