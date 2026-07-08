@@ -13,7 +13,14 @@ const api = axios.create({
 api.interceptors.request.use((config) => {
   const accessToken = localStorage.getItem('accessToken');
   if (accessToken) {
-    config.headers.Authorization = `Bearer ${accessToken}`;
+    if (config.headers && typeof config.headers.set === 'function') {
+      config.headers.set('Authorization', `Bearer ${accessToken}`);
+    } else {
+      config.headers = {
+        ...(config.headers || {}),
+        Authorization: `Bearer ${accessToken}`,
+      };
+    }
   }
   return config;
 });
