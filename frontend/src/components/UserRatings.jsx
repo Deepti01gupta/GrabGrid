@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+import api from '../api/axios';
 import { Skeleton } from './UI/index';
 
 /**
@@ -13,7 +13,7 @@ const UserRatings = ({ userId }) => {
     const fetchRatings = async () => {
       setLoading(true);
       try {
-        const res = await axios.get(`/api/ratings/user/${userId}`);
+        const res = await api.get(`/ratings/user/${userId}`);
         setRatings(res.data.ratings || []);
       } catch {
         setRatings([]);

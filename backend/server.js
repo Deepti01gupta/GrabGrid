@@ -24,6 +24,27 @@ const errorMiddleware = require('./middleware/errorMiddleware');
 
 const app = express();
 
+const defaultAllowedOrigins = [
+  'https://grab-grid.vercel.app/api',
+  'http://localhost:3000'
+];
+
+const allowedOrigins = process.env.CORS_ORIGINS
+  ? process.env.CORS_ORIGINS.split(',').map((origin) => origin.trim()).filter(Boolean)
+  : defaultAllowedOrigins;
+
+const corsOptions = {
+  origin: (origin, callback) => {
+    // Allow non-browser requests (no Origin header) and configured origins.
+    if (!origin || allowedOrigins.includes(origin)) {
+      return callback(null, true);
+    }
+    return callback(new Error('Not allowed by CORS'));
+  },
+  credentials: true,
+  optionsSuccessStatus: 200
+};
+
 /**
  * Daily cleanup: Mark expired items as unavailable
  * Runs on server startup and every 24 hours
@@ -65,13 +86,8 @@ const scheduleCleanup = () => {
 };
 
 // Middleware
-app.use(cors({
-  origin: [
-    'https://grab-grid.vercel.app',
-    'https://roaring-mochi-e64632.netlify.app/'
-  ],
-  credentials: true
-}));
+app.use(cors(corsOptions));
+app.options('*', cors(corsOptions));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 

@@ -1,6 +1,28 @@
 import axios from 'axios';
 
-const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000/api';
+const DEFAULT_DEV_API_URL = 'http://localhost:5000/api';
+const DEFAULT_PROD_API_URL = 'https://grabgrid-api.onrender.com/api';
+
+const normalizeApiBaseUrl = (rawUrl) => {
+  if (!rawUrl || typeof rawUrl !== 'string') return '';
+
+  let url = rawUrl.trim().replace(/\/+$/, '');
+  if (!url) return '';
+
+  // Guard against accidentally pointing API traffic to frontend hosting domains.
+  if (url.includes('netlify.app')) {
+    return DEFAULT_PROD_API_URL;
+  }
+
+  if (!/\/api(?:\/)?$/i.test(url)) {
+    url = `${url}/api`;
+  }
+
+  return url;
+};
+
+const configuredApiUrl = normalizeApiBaseUrl(process.env.REACT_APP_API_URL);
+const API_URL = configuredApiUrl || (process.env.NODE_ENV === 'production' ? DEFAULT_PROD_API_URL : DEFAULT_DEV_API_URL);
 
 const api = axios.create({
   baseURL: API_URL,

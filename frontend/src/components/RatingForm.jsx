@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import axios from 'axios';
+import api from '../api/axios';
 
 const StarRating = ({ value, onChange }) => {
   return (
@@ -31,7 +31,7 @@ const RatingForm = ({ reviewedUserId, itemId, borrowId, onSuccess }) => {
     setError('');
     setSuccess('');
     try {
-      const res = await axios.post('/api/ratings/add', {
+      await api.post('/ratings/add', {
         reviewedUserId,
         itemId,
         borrowId,
