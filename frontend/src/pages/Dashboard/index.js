@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { useTheme } from '../../context/ThemeContext';
 import api from '../../api/axios';
 import { Button, Card, Alert, EmptyState, StatCard, Badge, Skeleton } from '../../components/UI/index';
 import ItemCard from '../../components/ItemCard';
 import { componentClasses } from '../../styles/designSystem';
+import { subscribeToItemCreated } from '../../utils/itemEvents';
 
 /**
  * Professional Dashboard Page
@@ -15,10 +16,12 @@ const Dashboard = () => {
   const { user } = useAuth();
   const { isDark } = useTheme();
   const navigate = useNavigate();
+  const location = useLocation();
 
   // State Management
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [successMessage, setSuccessMessage] = useState(location.state?.successMessage || '');
   const [activeTab, setActiveTab] = useState('overview');
   const [_actionLoading, setActionLoading] = useState(null); // eslint-disable-line no-unused-vars
 
@@ -37,6 +40,21 @@ const Dashboard = () => {
   // Fetch dashboard data on mount
   useEffect(() => {
     fetchDashboardData();
+  }, []);
+
+  useEffect(() => {
+    if (location.state?.successMessage) {
+      setSuccessMessage(location.state.successMessage);
+      navigate(location.pathname, { replace: true, state: {} });
+    }
+  }, [location.pathname, location.state, navigate]);
+
+  useEffect(() => {
+    const unsubscribe = subscribeToItemCreated(() => {
+      fetchDashboardData();
+    });
+
+    return unsubscribe;
   }, []);
 
   const fetchDashboardData = async () => {
@@ -134,6 +152,17 @@ const Dashboard = () => {
 
   return (
     <div className={`min-h-screen ${isDark ? 'bg-neutral-900' : 'bg-neutral-50'} transition-colors duration-200`}>
+
+      {successMessage && (
+        <div className={componentClasses.container + ' pt-6'}>
+          <Alert
+            type="success"
+            title="Item Published"
+            message={successMessage}
+            onClose={() => setSuccessMessage('')}
+          />
+        </div>
+      )}
 
       {/* Header Section */}
       <div className={`${isDark ? 'bg-neutral-800 border-neutral-700' : 'bg-white border-neutral-200'} border-b`}>

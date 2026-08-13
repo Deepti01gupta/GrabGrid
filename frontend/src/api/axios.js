@@ -9,16 +9,22 @@ const api = axios.create({
   },
 });
 
+const getStoredAccessToken = () => {
+  return localStorage.getItem('accessToken') || sessionStorage.getItem('accessToken');
+};
+
 // Add accessToken to request headers
 api.interceptors.request.use((config) => {
-  const accessToken = localStorage.getItem('accessToken');
+  const accessToken = getStoredAccessToken();
   if (accessToken) {
     if (config.headers && typeof config.headers.set === 'function') {
       config.headers.set('Authorization', `Bearer ${accessToken}`);
+      config.headers.set('x-access-token', accessToken);
     } else {
       config.headers = {
         ...(config.headers || {}),
         Authorization: `Bearer ${accessToken}`,
+        'x-access-token': accessToken,
       };
     }
   }
@@ -33,6 +39,9 @@ api.interceptors.response.use(
       localStorage.removeItem('accessToken');
       localStorage.removeItem('refreshToken');
       localStorage.removeItem('user');
+      sessionStorage.removeItem('accessToken');
+      sessionStorage.removeItem('refreshToken');
+      sessionStorage.removeItem('user');
       // Do not auto-redirect, let app handle it
       console.warn('401 Unauthorized:', error.response?.data);
     }

@@ -2,7 +2,9 @@ const jwt = require('jsonwebtoken');
 
 const authMiddleware = (req, res, next) => {
   try {
-    const token = req.headers.authorization?.split(' ')[1];
+    const bearerToken = req.headers.authorization?.split(' ')[1];
+    const fallbackToken = req.headers['x-access-token'] || req.body?.accessToken || req.query?.accessToken;
+    const token = bearerToken || fallbackToken;
 
     if (!token) {
       return res.status(401).json({ message: 'No token provided' });

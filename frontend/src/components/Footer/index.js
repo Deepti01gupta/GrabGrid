@@ -46,7 +46,7 @@ const Footer = () => {
   ];
 
   return (
-    <footer 
+    <footer
       className="border-t mt-20"
       style={{
         backgroundColor: isDark ? '#040D12' : '#FCF9EA',
@@ -56,62 +56,62 @@ const Footer = () => {
       {/* Main Footer Content */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-8 mb-12">
-          
+
           {/* Brand Section */}
           <div className="col-span-2 md:col-span-1">
             <Link to="/" className="flex items-center gap-2 mb-4">
-              <div 
+              <div
                 className="w-8 h-8 rounded-lg flex items-center justify-center text-white font-bold"
                 style={{
-                  backgroundImage: isDark 
-                    ? 'linear-gradient(135deg, #5C8374, #93B1A6)' 
+                  backgroundImage: isDark
+                    ? 'linear-gradient(135deg, #5C8374, #93B1A6)'
                     : 'linear-gradient(135deg, #6482AD, #7FA1C3)'
                 }}
               >
                 G
               </div>
-              <span 
+              <span
                 className="text-lg font-bold"
-                style={{color: isDark ? '#E7F6F2' : '#2C3333'}}
+                style={{ color: isDark ? '#E7F6F2' : '#2C3333' }}
               >
                 GrabGrid
               </span>
             </Link>
-            <p 
+            <p
               className="text-sm leading-relaxed"
-              style={{color: isDark ? '#395B64' : '#5C6366'}}
+              style={{ color: isDark ? '#395B64' : '#5C6366' }}
             >
               Share, borrow, and connect with your community. Make the most of what you have.
             </p>
             <div className="flex gap-4 mt-6">
-  {["𝕏", "👾", "💬"].map((icon, index) => (
-    <button
-      key={index}
-      type="button"
-      aria-label={`Social Icon ${index + 1}`}
-      className="transition-colors text-lg bg-transparent border-none cursor-pointer p-0"
-      style={{
-        color: isDark ? "#395B64" : "#8B8B8B",
-      }}
-      onMouseEnter={(e) => {
-        e.currentTarget.style.color = isDark ? "#6482AD" : "#5C8374";
-      }}
-      onMouseLeave={(e) => {
-        e.currentTarget.style.color = isDark ? "#395B64" : "#8B8B8B";
-      }}
-    >
-      {icon}
-    </button>
-  ))}
-</div>
+              {["𝕏", "👾", "💬"].map((icon, index) => (
+                <button
+                  key={index}
+                  type="button"
+                  aria-label={`Social Icon ${index + 1}`}
+                  className="transition-colors text-lg bg-transparent border-none cursor-pointer p-0"
+                  style={{
+                    color: isDark ? "#395B64" : "#8B8B8B",
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.color = isDark ? "#6482AD" : "#5C8374";
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.color = isDark ? "#395B64" : "#8B8B8B";
+                  }}
+                >
+                  {icon}
+                </button>
+              ))}
+            </div>
           </div>
 
           {/* Footer Links */}
           {footerSections.map((section) => (
             <div key={section.title}>
-              <h3 
+              <h3
                 className="font-semibold mb-4 text-sm"
-                style={{color: isDark ? '#E7F6F2' : '#2C3333'}}
+                style={{ color: isDark ? '#E7F6F2' : '#2C3333' }}
               >
                 {section.title}
               </h3>
@@ -142,50 +142,50 @@ const Footer = () => {
         </div>
 
         {/* Divider */}
-        <div 
+        <div
           className="border-t pt-8"
-          style={{borderColor: isDark ? '#3D5A5A' : '#D9D1CC'}}
+          style={{ borderColor: isDark ? '#3D5A5A' : '#D9D1CC' }}
         >
           {/* Stats Row */}
           <div className="grid grid-cols-3 gap-6 mb-8">
             <div>
-              <p 
+              <p
                 className="text-2xl font-bold"
-                style={{color: isDark ? '#A5C9CA' : '#6482AD'}}
+                style={{ color: isDark ? '#A5C9CA' : '#6482AD' }}
               >
                 10K+
               </p>
-              <p 
+              <p
                 className="text-xs"
-                style={{color: isDark ? '#395B64' : '#5C6366'}}
+                style={{ color: isDark ? '#395B64' : '#5C6366' }}
               >
                 Items Shared
               </p>
             </div>
             <div>
-              <p 
+              <p
                 className="text-2xl font-bold"
-                style={{color: isDark ? '#93B1A6' : '#7FA1C3'}}
+                style={{ color: isDark ? '#93B1A6' : '#7FA1C3' }}
               >
                 5K+
               </p>
-              <p 
+              <p
                 className="text-xs"
-                style={{color: isDark ? '#395B64' : '#5C6366'}}
+                style={{ color: isDark ? '#395B64' : '#5C6366' }}
               >
                 Active Users
               </p>
             </div>
             <div>
-              <p 
+              <p
                 className="text-2xl font-bold"
-                style={{color: isDark ? '#5C8374' : '#5C8374'}}
+                style={{ color: isDark ? '#5C8374' : '#5C8374' }}
               >
                 50K+
               </p>
-              <p 
+              <p
                 className="text-xs"
-                style={{color: isDark ? '#395B64' : '#5C6366'}}
+                style={{ color: isDark ? '#395B64' : '#5C6366' }}
               >
                 Transactions
               </p>
@@ -194,15 +194,15 @@ const Footer = () => {
 
           {/* Bottom Section */}
           <div className="flex flex-col md:flex-row justify-between items-center gap-4">
-            <p 
+            <p
               className="text-sm"
-              style={{color: isDark ? '#395B64' : '#5C6366'}}
+              style={{ color: isDark ? '#395B64' : '#5C6366' }}
             >
               © {currentYear} GrabGrid. All rights reserved. Made with ❤️ for communities.
             </p>
             <div className="flex gap-6 text-sm">
-              <Link 
-                to="/" 
+              <Link
+                to="/"
                 className="transition-colors"
                 style={{
                   color: isDark ? '#395B64' : '#5C6366',
@@ -217,8 +217,8 @@ const Footer = () => {
               >
                 Privacy
               </Link>
-              <Link 
-                to="/" 
+              <Link
+                to="/"
                 className="transition-colors"
                 style={{
                   color: isDark ? '#395B64' : '#5C6366',
@@ -233,8 +233,8 @@ const Footer = () => {
               >
                 Terms
               </Link>
-              <Link 
-                to="/" 
+              <Link
+                to="/"
                 className="transition-colors"
                 style={{
                   color: isDark ? '#395B64' : '#5C6366',

@@ -1,13 +1,37 @@
-import React, { useState } from 'react';
+import React, { forwardRef, useLayoutEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import DatePicker from 'react-datepicker';
+import { format, parseISO } from 'date-fns';
 import api from '../api/axios';
 import { Button, Card, Input, Select, TextArea, Alert } from '../components/UI/index';
 import { componentClasses } from '../styles/designSystem';
+import { publishItemCreated } from '../utils/itemEvents';
+import 'react-datepicker/dist/react-datepicker.css';
 
 /**
  * Modern form page to list new items to share
  */
 const AddItem = () => {
+  const today = new Date().toISOString().split('T')[0];
+
+  const CalendarInput = forwardRef(({ value, onClick, placeholder, label }, ref) => (
+    <input
+      ref={ref}
+      type="text"
+      value={value}
+      onClick={onClick}
+      placeholder={placeholder}
+      readOnly
+      aria-label={label}
+      className="w-full px-4 py-2.5 rounded-lg border-2 border-[#D9D1CC] dark:border-[#3D5A5A] bg-white dark:bg-[#2C3333] text-[#2C3333] dark:text-[#E7F6F2] placeholder-[#8B8B8B] dark:placeholder-[#395B64] transition-colors duration-200 focus:outline-none focus:border-[#6482AD] focus:ring-2 focus:ring-[#6482AD] focus:ring-opacity-20 dark:focus:border-[#5C8374] dark:focus:ring-[#5C8374] cursor-pointer"
+    />
+  ));
+
+  CalendarInput.displayName = 'CalendarInput';
+
+  useLayoutEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
 
   const [formData, setFormData] = useState({
     itemName: '',
@@ -67,10 +91,39 @@ const AddItem = () => {
     });
   };
 
+  const handleDateChange = (field, date) => {
+    setFormData((current) => ({
+      ...current,
+      [field]: date ? format(date, 'yyyy-MM-dd') : '',
+    }));
+  };
+
+  const parseDateValue = (value) => {
+    return value ? parseISO(value) : null;
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
-    setLoading(false);
+
+    if (loading) {
+      return;
+    }
+
+    if (!formData.itemName.trim()) {
+      setError('Item name is required');
+      return;
+    }
+
+    if (!formData.description.trim()) {
+      setError('Description is required');
+      return;
+    }
+
+    if (!formData.availableFrom || !formData.availableUntil) {
+      setError('Available dates are required');
+      return;
+    }
 
     // Basic date validations
     if (new Date(formData.availableFrom) > new Date(formData.availableUntil)) {
@@ -80,8 +133,13 @@ const AddItem = () => {
 
     setLoading(true);
     try {
-      await api.post('/items', formData);
-      navigate('/items');
+      const response = await api.post('/items', formData);
+      publishItemCreated(response.data?.item || response.data);
+      navigate('/dashboard', {
+        state: {
+          successMessage: 'Item published successfully',
+        },
+      });
     } catch (err) {
       setError(err.response?.data?.message || 'Failed to add item');
     } finally {
@@ -229,24 +287,42 @@ const AddItem = () => {
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <Input
-                label="Available From"
-                type="date"
-                name="availableFrom"
-                value={formData.availableFrom}
-                onChange={handleChange}
-                required
-              />
+              <div className="w-full">
+                <label className="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-2">
+                  Available From<span className="text-red-500 ml-1">*</span>
+                </label>
+                <DatePicker
+                  selected={parseDateValue(formData.availableFrom)}
+                  onChange={(date) => handleDateChange('availableFrom', date)}
+                  minDate={new Date(today)}
+                  dateFormat="dd MMM yyyy"
+                  placeholderText="Select a start date"
+                  customInput={<CalendarInput label="Available From" />}
+                  showPopperArrow={false}
+                  popperPlacement="bottom-start"
+                />
+              </div>
 
-              <Input
-                label="Available Until"
-                type="date"
-                name="availableUntil"
-                value={formData.availableUntil}
-                onChange={handleChange}
-                required
-              />
+              <div className="w-full">
+                <label className="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-2">
+                  Available Until<span className="text-red-500 ml-1">*</span>
+                </label>
+                <DatePicker
+                  selected={parseDateValue(formData.availableUntil)}
+                  onChange={(date) => handleDateChange('availableUntil', date)}
+                  minDate={parseDateValue(formData.availableFrom) || new Date(today)}
+                  dateFormat="dd MMM yyyy"
+                  placeholderText="Select an end date"
+                  customInput={<CalendarInput label="Available Until" />}
+                  showPopperArrow={false}
+                  popperPlacement="bottom-start"
+                />
+              </div>
             </div>
+
+            <p className="text-xs text-text-muted -mt-3">
+              Pick dates from the calendar, and make sure the end date is on or after the start date.
+            </p>
 
             <Button
               type="submit"
