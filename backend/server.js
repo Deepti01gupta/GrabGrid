@@ -65,7 +65,13 @@ const scheduleCleanup = () => {
 };
 
 // Middleware
-app.use(cors());
+app.use(cors({
+  origin: [
+    'https://grab-grid.vercel.app',
+    'https://roaring-mochi-e64632.netlify.app/'
+  ],
+  credentials: true
+}));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
